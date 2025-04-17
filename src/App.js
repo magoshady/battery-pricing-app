@@ -1,4 +1,3 @@
-// Main entry - app layout
 import { useState } from 'react';
 import { BatteryFull } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -89,26 +88,26 @@ export default function BatteryApp() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-gray-100 to-gray-200 p-4 max-w-md mx-auto font-sans">
+    <div className="min-h-screen bg-black text-white p-4 max-w-md mx-auto font-sans">
       {!qualified && (
-        <div className="bg-white p-4 rounded-xl shadow space-y-4">
+        <div className="bg-zinc-900 p-4 rounded-xl shadow space-y-4">
           <h1 className="text-xl font-bold">Let’s see if a battery makes sense for you 🔍</h1>
           <input
             type="number"
             placeholder="Daily Import (kWh)"
             value={importKWh}
             onChange={(e) => setImportKWh(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded bg-black border-white text-white"
           />
           <input
             type="number"
             placeholder="Daily Export (kWh)"
             value={exportKWh}
             onChange={(e) => setExportKWh(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded bg-black border-white text-white"
           />
           <button
-            className="w-full bg-green-600 text-white p-3 rounded-xl shadow"
+            className="w-full bg-[#CBF7DA] text-black p-3 rounded-xl shadow"
             onClick={handleQualification}
           >
             Recommend My Battery Size
@@ -117,7 +116,7 @@ export default function BatteryApp() {
       )}
 
       {qualified && step === 0 && (
-        <div className="bg-white p-4 rounded-xl shadow space-y-4 mt-6">
+        <div className="bg-zinc-900 p-4 rounded-xl shadow space-y-4 mt-6">
           <h2 className="flex items-center text-lg font-semibold gap-2">
             <BatteryFull className="w-5 h-5" />
             Recommended Size: {recommendedSize}kWh
@@ -128,7 +127,7 @@ export default function BatteryApp() {
                 key={size}
                 onClick={() => setBatterySize(size)}
                 className={`text-sm p-2 border rounded ${
-                  batterySize === size ? 'bg-green-600 text-white' : 'hover:bg-green-100'
+                  batterySize === size ? 'bg-green-600 text-white' : 'hover:bg-green-100 text-white'
                 }`}
               >
                 {size}kWh
@@ -141,7 +140,7 @@ export default function BatteryApp() {
             ))}
           </div>
           <button
-            className="w-full bg-black text-white p-3 rounded-xl shadow"
+            className="w-full bg-[#CBF7DA] text-black p-3 rounded-xl shadow"
             onClick={() => setStep(step + 1)}
           >
             Next
@@ -150,7 +149,7 @@ export default function BatteryApp() {
       )}
 
       {qualified && step > 0 && step <= installAddons.length && (
-        <div className="bg-white p-4 rounded-xl shadow space-y-4 mt-6">
+        <div className="bg-zinc-900 p-4 rounded-xl shadow space-y-4 mt-6">
           <h3 className="font-semibold text-center">Do you need:</h3>
           <AnimatePresence mode="wait">
             <motion.label
@@ -159,7 +158,7 @@ export default function BatteryApp() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
               transition={{ duration: 0.25, ease: 'easeInOut' }}
-              className="flex items-center justify-between border p-3 rounded-xl shadow bg-white"
+              className="flex items-center justify-between border p-3 rounded-xl shadow bg-zinc-800"
             >
               <span>{installAddons[step - 1].name}</span>
               <div className="relative">
@@ -180,7 +179,7 @@ export default function BatteryApp() {
             </motion.label>
           </AnimatePresence>
           <button
-            className="w-full bg-black text-white p-3 rounded-xl shadow"
+            className="w-full bg-[#CBF7DA] text-black p-3 rounded-xl shadow"
             onClick={() => setStep(step + 1)}
           >
             {step < installAddons.length ? 'Next' : 'Finish'}
@@ -189,7 +188,7 @@ export default function BatteryApp() {
       )}
 
       {qualified && step > installAddons.length && !showForm && (
-        <div className="bg-white p-6 rounded-xl shadow space-y-4 mt-6">
+        <div className="bg-zinc-900 p-6 rounded-xl shadow space-y-4 mt-6">
           <h2 className="text-lg font-bold">Quote Summary</h2>
           <p>Battery Size: {batterySize}kWh</p>
           <p>Battery Cost: {formatCurrency(batteryPrices[batterySize])}</p>
@@ -210,7 +209,7 @@ export default function BatteryApp() {
             </a>
             <button
               onClick={() => setShowForm(true)}
-              className="block bg-gray-200 text-black p-3 text-center rounded-xl"
+              className="block bg-[#CBF7DA] text-black p-3 text-center rounded-xl"
             >
               Send me a quote
             </button>
@@ -219,18 +218,18 @@ export default function BatteryApp() {
       )}
 
       {showForm && !submitted && (
-        <form onSubmit={handleFormSubmit} className="bg-white p-6 rounded-xl shadow space-y-4 mt-6">
+        <form onSubmit={handleFormSubmit} className="bg-zinc-900 p-6 rounded-xl shadow space-y-4 mt-6">
           <input
             type="text"
             name={formFields[formStep].name}
             placeholder={formFields[formStep].placeholder}
             value={formData[formFields[formStep].name]}
             onChange={handleFormChange}
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded bg-black border-white text-white"
           />
           <button
             type="submit"
-            className="w-full bg-black text-white p-3 rounded-xl"
+            className="w-full bg-[#CBF7DA] text-black p-3 rounded-xl"
           >
             {formStep < formFields.length - 1 ? 'Next' : 'Submit'}
           </button>
@@ -238,7 +237,7 @@ export default function BatteryApp() {
       )}
 
       {submitted && (
-        <div className="bg-white p-6 rounded-xl shadow space-y-4 mt-6 text-center">
+        <div className="bg-zinc-900 p-6 rounded-xl shadow space-y-4 mt-6 text-center">
           <h2 className="text-xl font-bold">Thanks!</h2>
           <p>A member of our team will reach out shortly, but you can also:</p>
           <a
