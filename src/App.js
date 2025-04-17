@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BatteryFull } from 'lucide-react';
+import { BatteryFull, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const batteryPrices = {
@@ -18,6 +18,15 @@ const installAddons = [
   { name: 'Three Phase Installation', cost: 250 },
   { name: 'Cement Sheeting Installation', cost: 400 },
   { name: 'Over 5m to Meterbox', cost: 250 },
+];
+
+const installTooltips = [
+  'Required if your switchboard is outdated or incompatible with battery systems.',
+  'Keeps essential appliances running during a blackout.',
+  'Extra work for garage installations (wiring, protection, etc.).',
+  'For homes with three-phase power supply.',
+  'Surface mounting on cement sheeting requires special treatment.',
+  'Extra cabling and protection for distances over 5m from the meter box.'
 ];
 
 export default function BatteryApp() {
@@ -107,7 +116,7 @@ export default function BatteryApp() {
             className="w-full border p-2 rounded bg-black border-white text-white"
           />
           <button
-            className="w-full bg-[#CBF7DA] text-black p-3 rounded-xl shadow"
+            className="w-full bg-[#CBF7DA] text-black p-3 rounded-xl shadow hover:bg-[#b7eecb] transition-all duration-150"
             onClick={handleQualification}
           >
             Recommend My Battery Size
@@ -126,7 +135,7 @@ export default function BatteryApp() {
               <button
                 key={size}
                 onClick={() => setBatterySize(size)}
-                className={`text-sm p-2 border rounded ${
+                className={`text-sm p-2 border rounded transition-all duration-150 ${
                   batterySize === size ? 'bg-green-600 text-white' : 'hover:bg-green-100 text-white'
                 }`}
               >
@@ -136,11 +145,17 @@ export default function BatteryApp() {
           </div>
           <div className="flex justify-center mt-3">
             {[...Array(batterySize / 5)].map((_, i) => (
-              <div key={i} className="w-8 h-8 bg-green-500 rounded shadow-md mx-0.5" />
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="w-8 h-8 bg-green-500 rounded shadow-md mx-0.5 border border-green-300"
+              />
             ))}
           </div>
           <button
-            className="w-full bg-[#CBF7DA] text-black p-3 rounded-xl shadow"
+            className="w-full bg-[#CBF7DA] text-black p-3 rounded-xl shadow hover:bg-[#b7eecb] transition-all duration-150"
             onClick={() => setStep(step + 1)}
           >
             Next
@@ -160,7 +175,15 @@ export default function BatteryApp() {
               transition={{ duration: 0.25, ease: 'easeInOut' }}
               className="flex items-center justify-between border p-3 rounded-xl shadow bg-zinc-800"
             >
-              <span>{installAddons[step - 1].name}</span>
+              <span className="flex items-center gap-2">
+                {installAddons[step - 1].name}
+                <div className="relative group cursor-pointer">
+                  <Info size={16} className="text-gray-400" />
+                  <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-zinc-700 text-xs text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50">
+                    {installTooltips[step - 1]}
+                  </div>
+                </div>
+              </span>
               <div className="relative">
                 <input
                   type="checkbox"
@@ -169,7 +192,11 @@ export default function BatteryApp() {
                   checked={toggles[step - 1]}
                   onChange={() => toggleAddon(step - 1)}
                 />
-                <div className="block bg-gray-300 w-10 h-6 rounded-full transition duration-200"></div>
+                <div
+                  className={`block w-10 h-6 rounded-full transition duration-200 ${
+                    toggles[step - 1] ? 'bg-green-500' : 'bg-gray-300'
+                  }`}
+                ></div>
                 <div
                   className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-200 ease-in-out ${
                     toggles[step - 1] ? 'translate-x-4' : ''
@@ -179,16 +206,29 @@ export default function BatteryApp() {
             </motion.label>
           </AnimatePresence>
           <button
-            className="w-full bg-[#CBF7DA] text-black p-3 rounded-xl shadow"
+            className="w-full bg-[#CBF7DA] text-black p-3 rounded-xl shadow hover:bg-[#b7eecb] transition-all duration-150"
             onClick={() => setStep(step + 1)}
           >
             {step < installAddons.length ? 'Next' : 'Finish'}
           </button>
+          <div className="w-full bg-gray-700 rounded-full h-2 mt-4">
+            <div
+              className="bg-[#CBF7DA] h-2 rounded-full transition-all duration-300"
+              style={{ width: `${(step / (installAddons.length + 1)) * 100}%` }}
+            ></div>
+          </div>
         </div>
       )}
 
       {qualified && step > installAddons.length && !showForm && (
-        <div className="bg-zinc-900 p-6 rounded-xl shadow space-y-4 mt-6">
+        <motion.div
+          key="summary"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.4, ease: 'easeInOut' }}
+          className="bg-zinc-900 p-6 rounded-xl shadow space-y-4 mt-6"
+        >
           <h2 className="text-lg font-bold">Quote Summary</h2>
           <p>Battery Size: {batterySize}kWh</p>
           <p>Battery Cost: {formatCurrency(batteryPrices[batterySize])}</p>
@@ -209,32 +249,44 @@ export default function BatteryApp() {
             </a>
             <button
               onClick={() => setShowForm(true)}
-              className="block bg-[#CBF7DA] text-black p-3 text-center rounded-xl"
+              className="block bg-[#CBF7DA] text-black p-3 text-center rounded-xl hover:bg-[#b7eecb] transition-all duration-150"
             >
               Send me a quote
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
 
-      {showForm && !submitted && (
-        <form onSubmit={handleFormSubmit} className="bg-zinc-900 p-6 rounded-xl shadow space-y-4 mt-6">
-          <input
-            type="text"
-            name={formFields[formStep].name}
-            placeholder={formFields[formStep].placeholder}
-            value={formData[formFields[formStep].name]}
-            onChange={handleFormChange}
-            className="w-full border p-2 rounded bg-black border-white text-white"
-          />
-          <button
-            type="submit"
-            className="w-full bg-[#CBF7DA] text-black p-3 rounded-xl"
-          >
-            {formStep < formFields.length - 1 ? 'Next' : 'Submit'}
-          </button>
-        </form>
-      )}
+{showForm && !submitted && (
+  <form
+    onSubmit={(e) => {
+      e.preventDefault();
+      if (formData[formFields[formStep].name].trim() === '') return;
+      if (formStep < formFields.length - 1) {
+        setFormStep((prev) => prev + 1);
+      } else {
+        setSubmitted(true);
+      }
+    }}
+    className="bg-zinc-900 p-6 rounded-xl shadow space-y-4 mt-6"
+  >
+    <input
+      type={formFields[formStep].name === 'email' ? 'email' : 'text'}
+      name={formFields[formStep].name}
+      placeholder={formFields[formStep].placeholder}
+      value={formData[formFields[formStep].name]}
+      onChange={(e) => setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))}
+      required
+      className="w-full border p-2 rounded bg-black border-white text-white"
+    />
+    <button
+      type="submit"
+      className="w-full bg-[#CBF7DA] text-black p-3 rounded-xl hover:bg-[#b7eecb] transition-all duration-150"
+    >
+      {formStep < formFields.length - 1 ? 'Next' : 'Submit'}
+    </button>
+  </form>
+)}
 
       {submitted && (
         <div className="bg-zinc-900 p-6 rounded-xl shadow space-y-4 mt-6 text-center">
