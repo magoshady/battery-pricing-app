@@ -22,11 +22,11 @@ const installAddons = [
 
 const installTooltips = [
   'Required if your switchboard is outdated or incompatible with battery systems.',
-  'Keeps essential appliances running during a blackout.',
-  'Extra work for garage installations (wiring, protection, etc.).',
-  'For homes with three-phase power supply.',
-  'Surface mounting on cement sheeting requires special treatment.',
-  'Extra cabling and protection for distances over 5m from the meter box.'
+  'Only one light circuit and one outlet can be backup with this product ',
+  'Extra work required for garage installation, including fire-alarms',
+  'Three-Phase Installation requires extra monitoring configurations',
+  'Required for combustible material walls.',
+  'Extra cabling and isolators are required for distances over 5m from the meter box.'
 ];
 
 export default function BatteryApp() {
